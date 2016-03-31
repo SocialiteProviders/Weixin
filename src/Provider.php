@@ -14,7 +14,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     const IDENTIFIER = 'WEIXIN';
 
     /**
-     * {@inheritdoc}.
+     * @var string
      */
     protected $openId;
 
@@ -22,6 +22,16 @@ class Provider extends AbstractProvider implements ProviderInterface
      * {@inheritdoc}.
      */
     protected $scopes = ['snsapi_login'];
+
+    /**
+     * set Open Id.
+     *
+     * @param string $openId
+     */
+    public function setOpenId($openId)
+    {
+        $this->openId = $openId;
+    }
 
     /**
      * {@inheritdoc}.
@@ -36,8 +46,6 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function buildAuthUrlFromBase($url, $state)
     {
-        $session = $this->request->getSession();
-
         $query = http_build_query($this->getCodeFields($state), '', '&', $this->encodingType);
 
         return $url.'?'.$query.'#wechat_redirect';
@@ -111,33 +119,9 @@ class Provider extends AbstractProvider implements ProviderInterface
             'query' => $this->getTokenFields($code),
         ]);
 
-        return $this->parseAccessToken($response->getBody()->getContents());
-    }
+        $this->credentialsResponseBody = json_decode($response->getBody(), true);
+        $this->openId = $this->credentialsResponseBody['openid'];
 
-    /**
-     * {@inheritdoc}.
-     */
-    protected function parseAccessToken($body)
-    {
-        $jsonArray = json_decode($body, true);
-        $this->openId = $jsonArray['openid'];
-
-        return $jsonArray['access_token'];
-    }
-
-    /**
-     * @param mixed $response
-     *
-     * @return string
-     */
-    protected function removeCallback($response)
-    {
-        if (strpos($response, 'callback') !== false) {
-            $lpos = strpos($response, '(');
-            $rpos = strrpos($response, ')');
-            $response = substr($response, $lpos + 1, $rpos - $lpos - 1);
-        }
-
-        return $response;
+        return $this->parseAccessToken($response->getBody());
     }
 }
