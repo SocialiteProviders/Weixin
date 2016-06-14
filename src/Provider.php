@@ -21,7 +21,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}.
      */
-    protected $scopes = ['snsapi_userinfo'];
+    protected $scopes = ['snsapi_login'];
 
     /**
      * set Open Id.
