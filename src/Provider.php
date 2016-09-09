@@ -38,10 +38,7 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase($this->getConfig(
-            'auth_base_uri',
-            'https://open.weixin.qq.com/connect/oauth2/authorize'
-        ), $state);
+        return $this->buildAuthUrlFromBase('https://open.weixin.qq.com/connect/oauth2/authorize', $state);
     }
 
     /**
@@ -128,8 +125,4 @@ class Provider extends AbstractProvider implements ProviderInterface
         return $this->credentialsResponseBody;
     }
 
-    public static function additionalConfigKeys()
-    {
-        return ['auth_base_uri'];
-    }
 }
