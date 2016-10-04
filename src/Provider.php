@@ -21,7 +21,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}.
      */
-    protected $scopes = ['snsapi_login'];
+    protected $scopes = ['snsapi_userinfo'];
 
     /**
      * set Open Id.
@@ -38,10 +38,7 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase($this->getConfig(
-            'auth_base_uri',
-            'https://open.weixin.qq.com/connect/oauth2/authorize'
-        ), $state);
+        return $this->buildAuthUrlFromBase('https://open.weixin.qq.com/connect/oauth2/authorize', $state);
     }
 
     /**
@@ -97,8 +94,11 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([
-            'id' => $user['openid'], 'nickname' => $user['nickname'],
-            'avatar' => $user['headimgurl'], 'name' => null, 'email' => null,
+            'id' => $user['openid'],
+            'nickname' => isset($user['nickname']) ? $user['nickname'] : null,
+            'avatar' => isset($user['headimgurl']) ? $user['headimgurl'] : null,
+            'name' => null,
+            'email' => null,
         ]);
     }
 
@@ -128,8 +128,13 @@ class Provider extends AbstractProvider implements ProviderInterface
         return $this->credentialsResponseBody;
     }
 
-    public static function additionalConfigKeys()
+    /**
+     * {@inheritdoc}.
+     */
+    public function scopes(array $scopes)
     {
-        return ['auth_base_uri'];
+        $this->scopes = array_unique($scopes);
+
+        return $this;
     }
 }
