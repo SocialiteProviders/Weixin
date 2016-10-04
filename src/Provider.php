@@ -48,7 +48,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     {
         $query = http_build_query($this->getCodeFields($state), '', '&', $this->encodingType);
 
-        return $url.'?'.$query.'#wechat_redirect';
+        return $url . '?' . $query . '#wechat_redirect';
     }
 
     /**
@@ -94,8 +94,11 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([
-            'id' => $user['openid'], 'nickname' => $user['nickname'],
-            'avatar' => $user['headimgurl'], 'name' => null, 'email' => null,
+            'id' => $user['openid'],
+            'nickname' => isset($user['nickname']) ? $user['nickname'] : null,
+            'avatar' => isset($user['headimgurl']) ? $user['headimgurl'] : null,
+            'name' => null,
+            'email' => null,
         ]);
     }
 
@@ -124,5 +127,15 @@ class Provider extends AbstractProvider implements ProviderInterface
 
         return $this->credentialsResponseBody;
     }
+
+    /**
+     * {@inheritdoc}.
+     */
+    public function scopes(array $scopes)
+    {
+        $this->scopes = array_unique($scopes);
+        return $this;
+    }
+
 
 }
