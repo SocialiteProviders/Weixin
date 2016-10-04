@@ -48,7 +48,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     {
         $query = http_build_query($this->getCodeFields($state), '', '&', $this->encodingType);
 
-        return $url . '?' . $query . '#wechat_redirect';
+        return $url.'?'.$query.'#wechat_redirect';
     }
 
     /**
@@ -134,8 +134,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     public function scopes(array $scopes)
     {
         $this->scopes = array_unique($scopes);
+
         return $this;
     }
-
-
 }
