@@ -105,6 +105,10 @@ class Provider extends AbstractProvider implements ProviderInterface
             'avatar'   => isset($user['headimgurl']) ? $user['headimgurl'] : null,
             'name'     => null,
             'email'    => null,
+            'gender' => isset($user['sex']) ? $user['sex'] : null,
+            'city' => isset($user['city']) ? $user['city'] : null,
+            'province' => isset($user['province']) ? $user['province'] : null,
+            'city' => isset($user['city']) ? $user['city'] : null,
         ]);
     }
 
